@@ -33,7 +33,7 @@ nextElement.click()
 # Input password with a delay to trick gmail
 wait = WebDriverWait(browser, 10)
 passwordElem = wait.until(EC.element_to_be_clickable((By.NAME, 'password')))
-passwordElem.send_keys('zwO48OMstmMBtJ16')
+passwordElem.send_keys(userPass)
 passwordElem.submit()
 
 # Click next button
