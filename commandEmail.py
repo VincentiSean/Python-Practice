@@ -15,8 +15,11 @@ userPass = 'notReelThough'
 # Receive command line arguments (arg 1 == receiving email && arg 2 == message to send)
 print('Please enter the email of the receiver...')
 receiver = input()
+print('Please enter a subject line...')
+subject = input()
 print('Please enter the message you would like to send...')
 message = input()
+print('Sending email now.')
 
 # login to gmail through preset login information
 browser = webdriver.Firefox()       # set the browser as Firefox
@@ -40,4 +43,20 @@ passwordElem.submit()
 nextElement = browser.find_element_by_id('passwordNext')
 nextElement.click()
 
+print('Logged in...')
+
 # send email
+compose = browser.find_element_by_xpath('//div[@gh="cm"]')  # use xpath to find "compose" because no easy identifier
+compose.click()
+
+print('Creating message...')
+
+#sendArea = browser.find_element_by_id(':8m')
+sendArea = wait.until(EC.element_to_be_clickable((By.ID, ':8m')))
+sendArea.send_keys(receiver)
+
+subjectArea = browser.find_element_by_id(':84')
+subjectArea.send_keys(subject)
+
+messageArea = browser.find_element_by_id(':99')
+messageArea.send_keys(message)
