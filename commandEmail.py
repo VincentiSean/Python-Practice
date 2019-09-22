@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 # Setup variables
 userEmail = 'fakeEmailforPrac@gmail.com'
@@ -19,7 +20,7 @@ print('Please enter a subject line...')
 subject = input()
 print('Please enter the message you would like to send...')
 message = input()
-print('Sending email now.')
+print('Attempting to login now.')
 
 # login to gmail through preset login information
 browser = webdriver.Firefox()       # set the browser as Firefox
@@ -45,18 +46,22 @@ nextElement.click()
 
 print('Logged in...')
 
-# send email
+# COMPOSING AND SENDING EMAIL
 compose = browser.find_element_by_xpath('//div[@gh="cm"]')  # use xpath to find "compose" because no easy identifier
 compose.click()
 
 print('Creating message...')
 
-#sendArea = browser.find_element_by_id(':8m')
-sendArea = wait.until(EC.element_to_be_clickable((By.ID, ':8m')))
-sendArea.send_keys(receiver)
+# Fill out email
+to = wait.until(EC.element_to_be_clickable((By.XPATH, '//textarea[@name="to"]'))) 
+to.send_keys(receiver)
 
-subjectArea = browser.find_element_by_id(':84')
+subjectArea = wait.until(EC.element_to_be_clickable((By.XPATH, '//input[@name="subjectbox"]'))) 
 subjectArea.send_keys(subject)
 
-messageArea = browser.find_element_by_id(':99')
+messageArea = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@aria-label="Message Body"]'))) 
 messageArea.send_keys(message)
+
+# Send email
+messageArea.send_keys(Keys.LEFT_CONTROL+Keys.ENTER) # Send with buttons (easier than finding a working XPATH)
+print('Message Sent!')
