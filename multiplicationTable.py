@@ -3,19 +3,27 @@
 #   and creates an N x N multiplication table in an Excel sheet.
 
 import openpyxl, sys
+from openpyxl.styles import Font
 
 wb = openpyxl.Workbook()    # Create a new blank spreadsheet
 sheet = wb['Sheet']
 
 numIn = int(sys.argv[1])
+boldFont = Font(bold=True)
 
 # Set default values for the first row up to numIn (skipping the first cell)
+# Also, make the font bold
 for col in range(1, numIn+1):
-    sheet.cell(row=1, column=col+1).value = col
+    currCell = sheet.cell(row=1, column=col+1)
+    currCell.value = col
+    currCell.font = boldFont
 
 # Set default values for the first column up to numIn (skipping the first cell)
+# Also, make the font bold
 for row in range(1, numIn+1):
-    sheet.cell(row=row+1, column=1).value = row
+    currCell = sheet.cell(row=row+1, column=1)
+    currCell.value = row
+    currCell.font = boldFont
 
 # Do the maths
 for i in range(1, sheet.max_row):
