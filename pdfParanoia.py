@@ -43,16 +43,9 @@ for pdf in pdfFiles:
         encryptedPdf.close()
 
         # Check to see that the file was created successfully
-        print(absNewPath)
-        checkPdfReader = PyPDF2.PdfFileReader(open(absNewPath), 'rb')
+        checkPdfReader = PyPDF2.PdfFileReader(open(absNewPath, 'rb'))
         if (checkPdfReader.isEncrypted == True):
-            print('New file encrypted.')
-            print('Attempting to decrypt.')
-            
-            if (checkPdfReader.decrypt(password)):
-                print('File decrypted!')
 
-        # Delete unencrypted file
-
-    
-    pdfFileToCopy.close()
+            # Delete unencrypted file
+            pdfFileToCopy.close()
+            os.unlink(pdf)
