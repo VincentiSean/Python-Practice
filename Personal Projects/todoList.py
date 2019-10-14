@@ -21,6 +21,34 @@ def printList():
 
         print(str(i + 1) + ': ' + todoItems[i])
 
+def removeExtraText(todoItems):
+    for i in range(len(todoItems)):
+        # Remove end line text from items
+        if todoItems[i].endswith('\n'):
+            todoItems[i] = todoItems[i].split('\n')[0]
+
+        # Remove 'Completed ' from completed items
+        if todoItems[i].startswith('Completed '):
+            todoItems[i] = todoItems[i].split('Completed ')[1]  
+
+    return todoItems
+
+def readItemsFromFile():
+    todoFile = open('todo.txt', 'r')        # Open the todo file
+    todoItems = todoFile.readlines()   
+    todoFile.close()
+
+    return todoItems
+
+# Write new list to file and close the file
+def rewriteFile(todoItems):
+    todoFile = open('todo.txt', 'w') 
+    for item in todoItems:
+        todoFile.write(item + '\n')
+
+    todoFile.close()
+
+#### End Functions ####
 printList()
 
 # Ask user what they want to do (add, delete, complete)
@@ -41,15 +69,11 @@ while (userInput != 'quit'):
         todoFile.write(newItem + '\n')          # Add the new item to the file with endline char
         todoFile.close()
     elif (userInput.startswith('del ')):
-        itemToDel = userInput.split('del ')[1]  # Get the item to add to the list
-        todoFile = open('todo.txt', 'r')        # Open the todo file
-        todoItems = todoFile.readlines()   
-        todoFile.close()
-
-        for i in range(len(todoItems)):
-            # Remove end line text from items
-            if todoItems[i].endswith('\n'):
-                todoItems[i] = todoItems[i].split('\n')[0]  
+        itemToDel = userInput.split('del ')[1]  # Get the item to delete from the list
+        
+        # Get todo list w/no frills
+        todoItems = readItemsFromFile()
+        todoItems = removeExtraText(todoItems)
 
         # Verify item is in the list before deleting
         if (itemToDel in todoItems):
@@ -59,13 +83,24 @@ while (userInput != 'quit'):
             print('That was not in the todo list.')
 
         # Write new list to file and close the file
-        todoFile = open('todo.txt', 'w') 
-        for item in todoItems:
-            todoFile.write(item + '\n')
+        rewriteFile(todoItems)
 
-        todoFile.close()
     elif (userInput.startswith('comp ')):
-        print('COMPLETED')
+        itemToComplete = userInput.split('comp ')[1]    # Get the item to mark as completed
+        
+        # Get todo list w/no frills
+        todoItems = readItemsFromFile()
+        todoItems = removeExtraText(todoItems)
+
+        # Go through all the items searching for the item to mark as 'completed'
+        for i in range(len(todoItems)):
+            if (itemToComplete == todoItems[i]):
+                todoItems[i] = 'Completed ' + todoItems[i]
+                print("Completed")
+
+        # Write new list to file and close the file
+        rewriteFile(todoItems)
+        
     elif (userInput == 'print'):
         printList()
     elif (userInput == 'quit'):
