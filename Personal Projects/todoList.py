@@ -41,7 +41,7 @@ while (userInput != 'quit'):
         todoFile.write(newItem + '\n')          # Add the new item to the file with endline char
         todoFile.close()
     elif (userInput.startswith('del ')):
-        itemToDel = userInput.split('del ')[1]  # Get the item to add to the list
+        itemToDel = userInput.split('del ')[1]  # Get the item to delete from the list
         todoFile = open('todo.txt', 'r')        # Open the todo file
         todoItems = todoFile.readlines()   
         todoFile.close()
@@ -49,7 +49,9 @@ while (userInput != 'quit'):
         for i in range(len(todoItems)):
             # Remove end line text from items
             if todoItems[i].endswith('\n'):
-                todoItems[i] = todoItems[i].split('\n')[0]  
+                todoItems[i] = todoItems[i].split('\n')[0]
+            if todoItems[i].startswith('Completed '):
+                todoItems[i] = todoItems[i].split('Completed ')[1]  
 
         # Verify item is in the list before deleting
         if (itemToDel in todoItems):
@@ -65,7 +67,28 @@ while (userInput != 'quit'):
 
         todoFile.close()
     elif (userInput.startswith('comp ')):
-        print('COMPLETED')
+        itemToComplete = userInput.split('comp ')[1]    # Get the item to mark as completed
+        todoFile = open('todo.txt', 'r')                # Open the todo file
+        todoItems = todoFile.readlines()
+        todoFile.close()
+
+        for i in range(len(todoItems)):
+            # Remove end line text from items
+            if todoItems[i].endswith('\n'):
+                todoItems[i] = todoItems[i].split('\n')[0]  
+
+        # Go through all the items searching for the item to mark as 'completed'
+        for i in range(len(todoItems)):
+            if (itemToComplete == todoItems[i]):
+                todoItems[i] = 'Completed ' + todoItems[i]
+                print("Completed")
+
+        # Write new list to file and close the file
+        todoFile = open('todo.txt', 'w') 
+        for item in todoItems:
+            todoFile.write(item + '\n')
+
+        todoFile.close()
     elif (userInput == 'print'):
         printList()
     elif (userInput == 'quit'):
