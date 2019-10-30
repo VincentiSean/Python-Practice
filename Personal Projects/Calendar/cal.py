@@ -6,6 +6,9 @@ import calendar
 import datetime
 
 weekdays = ["M", "Tu", "W", "Th", "F", "Sa", "Su"]
+currentMonth = 0
+currentYear = 0
+
 class Clndr(QMainWindow):
 
     def __init__(self):
@@ -14,27 +17,46 @@ class Clndr(QMainWindow):
 
     def initUI(self):
         global weekdays
+        global currentMonth
+        global currentYear
 
-        currMonth = datetime.datetime.now().strftime("%B")
-        self.currMonthLabel = QLabel(self)
-        self.currMonthLabel.resize(1000, 75)
-        self.currMonthLabel.move(0, 10)
-        self.currMonthLabel.setText(currMonth)
-        self.currMonthLabel.setAlignment(Qt.AlignCenter)
+        # Set global variables to current date
+        currentDate = str(datetime.datetime.now()).split("-")
+        currentYear = currentDate[0]
+        currentMonth = currentDate[1]
+
+        # Display current month on launch
+        currMonthText = datetime.datetime.now().strftime("%B")
+        currMonthLabel = QLabel(currMonthText, self)
+        currMonthLabel.resize(1000, 75)
+        currMonthLabel.move(0, 10)
+        currMonthLabel.setAlignment(Qt.AlignCenter)
         monthFont = QFont("Times", 36, QFont.Bold) 
-        self.currMonthLabel.setFont(monthFont)
+        currMonthLabel.setFont(monthFont)
 
+        # Set up left and right arrow buttons
+        leftArrow = QPushButton("<", self)
+        leftArrow.resize(50, 50)
+        leftArrow.move(100, 25)
+        leftArrow.clicked.connect(self.LeftArrow)
+
+        rightArrow = QPushButton(">", self)
+        rightArrow.resize(50, 50)
+        rightArrow.move(860, 25)
+        rightArrow.clicked.connect(self.RightArrow)
+
+        # Set up weekday letters
         posX = 150
         for weekday in range(0, 7):
-            self.weekdayLabel = QLabel(self)
-            self.weekdayLabel.resize(50, 20)
-            self.weekdayLabel.setAlignment(Qt.AlignLeft)
+            weekdayLabel = QLabel(weekdays[weekday], self)
+            weekdayLabel.resize(50, 20)
+            weekdayLabel.setAlignment(Qt.AlignLeft)
             weekdayFont = QFont("Times", 12, QFont.Bold) 
-            self.weekdayLabel.setFont(weekdayFont)
-            self.weekdayLabel.move(posX, 110)
-            self.weekdayLabel.setText(weekdays[weekday])
+            weekdayLabel.setFont(weekdayFont)
+            weekdayLabel.move(posX, 110)
             posX += 115
 
+        # TODO: set up on a loop to update after arrow clicks?
         # Get current month/year for calendar
         nowDate = datetime.datetime.now()
         nowDate = str(nowDate).split("-")
@@ -48,15 +70,15 @@ class Clndr(QMainWindow):
         posY = 135
         counter = 1
         for day in cal.itermonthdays(int(nowYear), int(nowMonth)):
-            self.dayLabel = QLabel(self)
-            self.dayLabel.resize(115, 100)
-            self.dayLabel.move(2 + posX, posY)
-            self.dayLabel.setStyleSheet("border: 1px solid grey;")
-            self.dayLabel.setAlignment(Qt.AlignTop)
+            dayLabel = QLabel(self)
+            dayLabel.resize(115, 100)
+            dayLabel.move(2 + posX, posY)
+            dayLabel.setStyleSheet("border: 1px solid grey;")
+            dayLabel.setAlignment(Qt.AlignTop)
             if day == 0:
-                self.dayLabel.setText("")
+                dayLabel.setText("")
             else:
-                self.dayLabel.setText(str(day))
+                dayLabel.setText(str(day))
 
             if counter < 7:
                 posX += 115
@@ -72,6 +94,58 @@ class Clndr(QMainWindow):
         self.setWindowTitle("Calendar")
         self.setFixedSize(1000, 700)
         self.show()
+
+    # TODO: Clean up  this code into more bite sized chunksrepeated code)
+    def LeftArrow(self):
+        global currentMonth
+        global currentYear
+
+        newDay = 1
+        currDate = datetime.datetime(int(currentYear), int(currentMonth), int(newDay))
+        currDate = str(currDate).split("-")
+        currMonth = currDate[1]
+        currYear = currDate[0]
+        newMonth = 0
+        newYear = 0
+
+        if (int(currMonth) - 1 < 1):
+            newYear = int(currYear) - 1
+            newMonth = 12
+        else:
+            newYear = currYear
+            newMonth = int(currMonth) - 1
+
+        newDate = datetime.datetime(int(newYear), int(newMonth), int(newDay))
+        currentMonth = str(newDate).split("-")[1]
+        currentYear = str(newDate).split("-")[0]
+        print(currentMonth)
+        print(currentYear)
+
+    def RightArrow(self):
+        global currentMonth
+        global currentYear
+
+        newDay = 1
+        currDate = datetime.datetime(int(currentYear), int(currentMonth), int(newDay))
+        currDate = str(currDate).split("-")
+        currMonth = currDate[1]
+        currYear = currDate[0]
+        newMonth = 0
+        newYear = 0
+
+        if (int(currMonth) + 1 > 12):
+            newYear = int(currYear) + 1
+            newMonth = 1
+        else:
+            newYear = currYear
+            newMonth = int(currMonth) + 1
+
+        newDate = datetime.datetime(int(newYear), int(newMonth), int(newDay))
+        currentMonth = str(newDate).split("-")[1]
+        currentYear = str(newDate).split("-")[0]
+        print(currentMonth)
+        print(currentYear)
+
 
 def main():
     app = QApplication(sys.argv)
